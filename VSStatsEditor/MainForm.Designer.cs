@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.label1 = new System.Windows.Forms.Label();
             this.eneLabel = new System.Windows.Forms.Label();
@@ -134,6 +135,7 @@
             this.compileButton = new System.Windows.Forms.Button();
             this.compLabel = new System.Windows.Forms.Label();
             this.savingLabel = new System.Windows.Forms.Label();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.statsGroupBox.SuspendLayout();
             this.equipGroupBox.SuspendLayout();
             this.SuspendLayout();
@@ -1377,6 +1379,7 @@
         private System.Windows.Forms.Button compileButton;
         private System.Windows.Forms.Label compLabel;
         private System.Windows.Forms.Label savingLabel;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 

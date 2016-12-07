@@ -10,12 +10,15 @@ namespace VSStatsEditor
     public partial class MainForm : Form
     {
         private string zonesDir = GameData.DefaultZonesDir;
-        private string[] zoneEnemies = new String[50];
         private UInt16[] curEnemyBodyPartHPs = new UInt16[6];
+        string[] zoneData;
+        private static int[] zoneEnemiesIndex = new int[50];
 
         public MainForm()
         {
             InitializeComponent();
+            string version = Application.ProductVersion;
+            this.Text = String.Format("VS Stat Editor v{0}", version);
         }
 
         private void LoadZones()
@@ -37,134 +40,129 @@ namespace VSStatsEditor
         {
             /* Parse out enemy's current data */
             ClearCurrentEnemy();
-            StreamReader enemyReader = File.OpenText(String.Format("{0}{1}{2}.ASM", zonesDir, Path.DirectorySeparatorChar, zoneBox.SelectedItem.ToString()));
 
-            string line;
-            while ((line = enemyReader.ReadLine()) != null)
-            {
-                if (line.Contains(zoneEnemies[enemyBox.SelectedIndex]))
-                {
-                    /* Basic stats: HP, MP, STR, INT, AGI, Run speed */
-                    hpBox.Text = UInt32.Parse(GetEnemyData(GameData.HPHeader, enemyReader), System.Globalization.NumberStyles.HexNumber).ToString();
-                    mpBox.Text = UInt32.Parse(GetEnemyData(GameData.MPHeader, enemyReader), System.Globalization.NumberStyles.HexNumber).ToString();
-                    strBox.Text = UInt16.Parse(GetEnemyData(GameData.STRHeader, enemyReader), System.Globalization.NumberStyles.HexNumber).ToString();
-                    intBox.Text = UInt16.Parse(GetEnemyData(GameData.INTHeader, enemyReader), System.Globalization.NumberStyles.HexNumber).ToString();
-                    agiBox.Text = UInt16.Parse(GetEnemyData(GameData.AGIHeader, enemyReader), System.Globalization.NumberStyles.HexNumber).ToString();
-                    runSpeedBox.Text = UInt16.Parse(GetEnemyData(GameData.RunSpeedHeader, enemyReader), System.Globalization.NumberStyles.HexNumber).ToString();
+            /* Basic stats: HP, MP, STR, INT, AGI, Run speed */
+            hpBox.Text = UInt32.Parse(GetEnemyData(GameData.HPHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), System.Globalization.NumberStyles.HexNumber).ToString();
+            mpBox.Text = UInt32.Parse(GetEnemyData(GameData.MPHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), System.Globalization.NumberStyles.HexNumber).ToString();
+            strBox.Text = UInt16.Parse(GetEnemyData(GameData.STRHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), System.Globalization.NumberStyles.HexNumber).ToString();
+            intBox.Text = UInt16.Parse(GetEnemyData(GameData.INTHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), System.Globalization.NumberStyles.HexNumber).ToString();
+            agiBox.Text = UInt16.Parse(GetEnemyData(GameData.AGIHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), System.Globalization.NumberStyles.HexNumber).ToString();
+            runSpeedBox.Text = UInt16.Parse(GetEnemyData(GameData.RunSpeedHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), System.Globalization.NumberStyles.HexNumber).ToString();
 
-                    /* Equipment and droprates */
-                    /* Weapon */
-                    bladeBox.Items.Add(GameData.ItemNames[GetEnemyData(GameData.WeaponNameHeader, enemyReader)]);
-                    bladeBox.SelectedIndex = 0;
-                    gripBox.Items.Add(GameData.ItemNames[GetEnemyData(GameData.WeaponGripNameHeader, enemyReader)]);
-                    gripBox.SelectedIndex = 0;
-                    weapGem1Box.Items.Add(GameData.ItemNames[GetEnemyData(GameData.WeaponGem1Header, enemyReader)]);
-                    weapGem1Box.SelectedIndex = 0;
-                    weapGem2Box.Items.Add(GameData.ItemNames[GetEnemyData(GameData.WeaponGem2Header, enemyReader)]);
-                    weapGem2Box.SelectedIndex = 0;
-                    weapGem3Box.Items.Add(GameData.ItemNames[GetEnemyData(GameData.WeaponGem3Header, enemyReader)]);
-                    weapGem3Box.SelectedIndex = 0;
-                    bladeMatBox.Items.Add(GameData.Materials[GetEnemyData(GameData.WeaponMatHeader, enemyReader)]);
-                    bladeMatBox.SelectedIndex = 0;
-                    weapDropRateBox.Text = (UInt16.Parse(GetEnemyData(GameData.WeaponDropChanceHeader, enemyReader), System.Globalization.NumberStyles.HexNumber) / 255.0d * 100).ToString("0.00");
+            /* Equipment and droprates */
+            /* Weapon */
+            bladeBox.Items.Add(GameData.ItemNames[GetEnemyData(GameData.WeaponNameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
+            bladeBox.SelectedIndex = 0;
+            gripBox.Items.Add(GameData.ItemNames[GetEnemyData(GameData.WeaponGripNameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
+            gripBox.SelectedIndex = 0;
+            weapGem1Box.Items.Add(GameData.ItemNames[GetEnemyData(GameData.WeaponGem1Header, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
+            weapGem1Box.SelectedIndex = 0;
+            weapGem2Box.Items.Add(GameData.ItemNames[GetEnemyData(GameData.WeaponGem2Header, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
+            weapGem2Box.SelectedIndex = 0;
+            weapGem3Box.Items.Add(GameData.ItemNames[GetEnemyData(GameData.WeaponGem3Header, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
+            weapGem3Box.SelectedIndex = 0;
+            bladeMatBox.Items.Add(GameData.Materials[GetEnemyData(GameData.WeaponMatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
+            bladeMatBox.SelectedIndex = 0;
+            weapDropRateBox.Text = (UInt16.Parse(GetEnemyData(GameData.WeaponDropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), System.Globalization.NumberStyles.HexNumber) / 255.0d * 100).ToString("0.00");
 
-                    /* Shield */
-                    shieldBox.Items.Add(GameData.ItemNames[GetEnemyData(GameData.ShieldNameHeader, enemyReader)]);
-                    shieldBox.SelectedIndex = 0;
-                    weapGem1Box.Items.Add(GameData.ItemNames[GetEnemyData(GameData.ShieldGem1Header, enemyReader)]);
-                    weapGem1Box.SelectedIndex = 0;
-                    weapGem2Box.Items.Add(GameData.ItemNames[GetEnemyData(GameData.ShieldGem2Header, enemyReader)]);
-                    weapGem2Box.SelectedIndex = 0;
-                    weapGem3Box.Items.Add(GameData.ItemNames[GetEnemyData(GameData.ShieldGem3Header, enemyReader)]);
-                    weapGem3Box.SelectedIndex = 0;
-                    shieldMatBox.Items.Add(GameData.Materials[GetEnemyData(GameData.ShieldMatHeader, enemyReader)]);
-                    shieldMatBox.SelectedIndex = 0;
-                    shieldDropRateBox.Text = (UInt16.Parse(GetEnemyData(GameData.ShieldDropChanceHeader, enemyReader), System.Globalization.NumberStyles.HexNumber) / 255.0d * 100).ToString("0.00");
+            /* Shield */
+            shieldBox.Items.Add(GameData.ItemNames[GetEnemyData(GameData.ShieldNameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
+            shieldBox.SelectedIndex = 0;
+            weapGem1Box.Items.Add(GameData.ItemNames[GetEnemyData(GameData.ShieldGem1Header, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
+            weapGem1Box.SelectedIndex = 0;
+            weapGem2Box.Items.Add(GameData.ItemNames[GetEnemyData(GameData.ShieldGem2Header, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
+            weapGem2Box.SelectedIndex = 0;
+            weapGem3Box.Items.Add(GameData.ItemNames[GetEnemyData(GameData.ShieldGem3Header, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
+            weapGem3Box.SelectedIndex = 0;
+            shieldMatBox.Items.Add(GameData.Materials[GetEnemyData(GameData.ShieldMatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
+            shieldMatBox.SelectedIndex = 0;
+            shieldDropRateBox.Text = (UInt16.Parse(GetEnemyData(GameData.ShieldDropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), System.Globalization.NumberStyles.HexNumber) / 255.0d * 100).ToString("0.00");
 
-                    /* Accessory */
-                    accBox.Items.Add(GameData.ItemNames[GetEnemyData(GameData.AccNameHeader, enemyReader)]);
-                    accBox.SelectedIndex = 0;
-                    accDropRateBox.Text = (UInt16.Parse(GetEnemyData(GameData.AccDropChanceHeader, enemyReader), System.Globalization.NumberStyles.HexNumber) / 255.0d * 100).ToString("0.00");
+            /* Accessory */
+            accBox.Items.Add(GameData.ItemNames[GetEnemyData(GameData.AccNameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
+            accBox.SelectedIndex = 0;
+            accDropRateBox.Text = (UInt16.Parse(GetEnemyData(GameData.AccDropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), System.Globalization.NumberStyles.HexNumber) / 255.0d * 100).ToString("0.00");
 
-                    /* Bodypart HP / armors */
-                    curEnemyBodyPartHPs[0] = Convert.ToUInt16(GetEnemyData(GameData.BodyPart0HPHeader, enemyReader), 16);
-                    bp0NameBox.Items.Add(GameData.ItemNames[GetEnemyData(GameData.BodyPart0NameHeader, enemyReader)]);
-                    bp0NameBox.SelectedIndex = 0;
-                    bp0MatBox.Items.Add(GameData.Materials[GetEnemyData(GameData.BodyPart0MatHeader, enemyReader)]);
-                    bp0MatBox.SelectedIndex = 0;
-                    bp0DropBox.Text = (UInt16.Parse(GetEnemyData(GameData.BodyPart0DropChanceHeader, enemyReader), System.Globalization.NumberStyles.HexNumber) / 255.0d * 100).ToString("0.00");
+            /* Bodypart HP / armors */
+            curEnemyBodyPartHPs[0] = Convert.ToUInt16(GetEnemyData(GameData.BodyPart0HPHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), 16);
+            bp0NameBox.Items.Add(GameData.ItemNames[GetEnemyData(GameData.BodyPart0NameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
+            bp0NameBox.SelectedIndex = 0;
+            bp0MatBox.Items.Add(GameData.Materials[GetEnemyData(GameData.BodyPart0MatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
+            bp0MatBox.SelectedIndex = 0;
+            bp0DropBox.Text = (UInt16.Parse(GetEnemyData(GameData.BodyPart0DropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), System.Globalization.NumberStyles.HexNumber) / 255.0d * 100).ToString("0.00");
 
-                    curEnemyBodyPartHPs[1] = Convert.ToUInt16(GetEnemyData(GameData.BodyPart1HPHeader, enemyReader), 16);
-                    bp1NameBox.Items.Add(GameData.ItemNames[GetEnemyData(GameData.BodyPart1NameHeader, enemyReader)]);
-                    bp1NameBox.SelectedIndex = 0;
-                    bp1MatBox.Items.Add(GameData.Materials[GetEnemyData(GameData.BodyPart1MatHeader, enemyReader)]);
-                    bp1MatBox.SelectedIndex = 0;
-                    bp1DropBox.Text = (UInt16.Parse(GetEnemyData(GameData.BodyPart1DropChanceHeader, enemyReader), System.Globalization.NumberStyles.HexNumber) / 255.0d * 100).ToString("0.00");
+            curEnemyBodyPartHPs[1] = Convert.ToUInt16(GetEnemyData(GameData.BodyPart1HPHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), 16);
+            bp1NameBox.Items.Add(GameData.ItemNames[GetEnemyData(GameData.BodyPart1NameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
+            bp1NameBox.SelectedIndex = 0;
+            bp1MatBox.Items.Add(GameData.Materials[GetEnemyData(GameData.BodyPart1MatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
+            bp1MatBox.SelectedIndex = 0;
+            bp1DropBox.Text = (UInt16.Parse(GetEnemyData(GameData.BodyPart1DropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), System.Globalization.NumberStyles.HexNumber) / 255.0d * 100).ToString("0.00");
 
-                    curEnemyBodyPartHPs[2] = Convert.ToUInt16(GetEnemyData(GameData.BodyPart2HPHeader, enemyReader), 16);
-                    bp2NameBox.Items.Add(GameData.ItemNames[GetEnemyData(GameData.BodyPart2NameHeader, enemyReader)]);
-                    bp2NameBox.SelectedIndex = 0;
-                    bp2MatBox.Items.Add(GameData.Materials[GetEnemyData(GameData.BodyPart2MatHeader, enemyReader)]);
-                    bp2MatBox.SelectedIndex = 0;
-                    bp2DropBox.Text = (UInt16.Parse(GetEnemyData(GameData.BodyPart2DropChanceHeader, enemyReader), System.Globalization.NumberStyles.HexNumber) / 255.0d * 100).ToString("0.00");
+            curEnemyBodyPartHPs[2] = Convert.ToUInt16(GetEnemyData(GameData.BodyPart2HPHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), 16);
+            bp2NameBox.Items.Add(GameData.ItemNames[GetEnemyData(GameData.BodyPart2NameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
+            bp2NameBox.SelectedIndex = 0;
+            bp2MatBox.Items.Add(GameData.Materials[GetEnemyData(GameData.BodyPart2MatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
+            bp2MatBox.SelectedIndex = 0;
+            bp2DropBox.Text = (UInt16.Parse(GetEnemyData(GameData.BodyPart2DropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), System.Globalization.NumberStyles.HexNumber) / 255.0d * 100).ToString("0.00");
 
-                    curEnemyBodyPartHPs[3] = Convert.ToUInt16(GetEnemyData(GameData.BodyPart3HPHeader, enemyReader), 16);
-                    bp3NameBox.Items.Add(GameData.ItemNames[GetEnemyData(GameData.BodyPart3NameHeader, enemyReader)]);
-                    bp3NameBox.SelectedIndex = 0;
-                    bp3MatBox.Items.Add(GameData.Materials[GetEnemyData(GameData.BodyPart3MatHeader, enemyReader)]);
-                    bp3MatBox.SelectedIndex = 0;
-                    bp3DropBox.Text = (UInt16.Parse(GetEnemyData(GameData.BodyPart3DropChanceHeader, enemyReader), System.Globalization.NumberStyles.HexNumber) / 255.0d * 100).ToString("0.00");
+            curEnemyBodyPartHPs[3] = Convert.ToUInt16(GetEnemyData(GameData.BodyPart3HPHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), 16);
+            bp3NameBox.Items.Add(GameData.ItemNames[GetEnemyData(GameData.BodyPart3NameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
+            bp3NameBox.SelectedIndex = 0;
+            bp3MatBox.Items.Add(GameData.Materials[GetEnemyData(GameData.BodyPart3MatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
+            bp3MatBox.SelectedIndex = 0;
+            bp3DropBox.Text = (UInt16.Parse(GetEnemyData(GameData.BodyPart3DropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), System.Globalization.NumberStyles.HexNumber) / 255.0d * 100).ToString("0.00");
 
-                    curEnemyBodyPartHPs[4] = Convert.ToUInt16(GetEnemyData(GameData.BodyPart4HPHeader, enemyReader), 16);
-                    bp4NameBox.Items.Add(GameData.ItemNames[GetEnemyData(GameData.BodyPart4NameHeader, enemyReader)]);
-                    bp4NameBox.SelectedIndex = 0;
-                    bp4MatBox.Items.Add(GameData.Materials[GetEnemyData(GameData.BodyPart4MatHeader, enemyReader)]);
-                    bp4MatBox.SelectedIndex = 0;
-                    bp4DropBox.Text = (UInt16.Parse(GetEnemyData(GameData.BodyPart4DropChanceHeader, enemyReader), System.Globalization.NumberStyles.HexNumber) / 255.0d * 100).ToString("0.00");
+            curEnemyBodyPartHPs[4] = Convert.ToUInt16(GetEnemyData(GameData.BodyPart4HPHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), 16);
+            bp4NameBox.Items.Add(GameData.ItemNames[GetEnemyData(GameData.BodyPart4NameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
+            bp4NameBox.SelectedIndex = 0;
+            bp4MatBox.Items.Add(GameData.Materials[GetEnemyData(GameData.BodyPart4MatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
+            bp4MatBox.SelectedIndex = 0;
+            bp4DropBox.Text = (UInt16.Parse(GetEnemyData(GameData.BodyPart4DropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), System.Globalization.NumberStyles.HexNumber) / 255.0d * 100).ToString("0.00");
 
-                    curEnemyBodyPartHPs[5] = Convert.ToUInt16(GetEnemyData(GameData.BodyPart5HPHeader, enemyReader), 16);
-                    bp5NameBox.Items.Add(GameData.ItemNames[GetEnemyData(GameData.BodyPart5NameHeader, enemyReader)]);
-                    bp5NameBox.SelectedIndex = 0;
-                    bp5MatBox.Items.Add(GameData.Materials[GetEnemyData(GameData.BodyPart5MatHeader, enemyReader)]);
-                    bp5MatBox.SelectedIndex = 0;
-                    bp5DropBox.Text = (UInt16.Parse(GetEnemyData(GameData.BodyPart5DropChanceHeader, enemyReader), System.Globalization.NumberStyles.HexNumber) / 255.0d * 100).ToString("0.00");
-
-                    break;
-                }
-            }
-
-            enemyReader.Close();
+            curEnemyBodyPartHPs[5] = Convert.ToUInt16(GetEnemyData(GameData.BodyPart5HPHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), 16);
+            bp5NameBox.Items.Add(GameData.ItemNames[GetEnemyData(GameData.BodyPart5NameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
+            bp5NameBox.SelectedIndex = 0;
+            bp5MatBox.Items.Add(GameData.Materials[GetEnemyData(GameData.BodyPart5MatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
+            bp5MatBox.SelectedIndex = 0;
+            bp5DropBox.Text = (UInt16.Parse(GetEnemyData(GameData.BodyPart5DropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), System.Globalization.NumberStyles.HexNumber) / 255.0d * 100).ToString("0.00");
         }
 
         private void zoneBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             /* Parse enemies in zone */
             string enemy;
-            uint numEnemies = 0;
+            int currentLine = 0;
+            int numEnemies = 0;
             ClearCurrentEnemy();
             enemyBox.Items.Clear();
             enemyBox.ResetText();
             enemyBox.SelectedIndex = -1;
             enemyBox.Refresh();
-            StreamReader enemyReader = File.OpenText(String.Format("{0}{1}{2}.ASM", zonesDir, Path.DirectorySeparatorChar, zoneBox.SelectedItem.ToString()));
 
-            while ((enemy = GetEnemyData(GameData.EnemyNameHeader, enemyReader)) != null)
+            zoneData = File.ReadAllLines(String.Format("{0}{1}{2}.ASM", zonesDir, Path.DirectorySeparatorChar, zoneBox.SelectedItem.ToString()));
+            while (!zoneData[currentLine].Contains(GameData.EndStatsSection))
             {
-                enemyBox.Items.Add(GameData.TranslateVSText(enemy));
-                zoneEnemies[numEnemies] = enemy;
-                numEnemies++;
+                if (zoneData[currentLine].Contains(GameData.EnemyNameHeader))
+                {
+                    enemy = zoneData[currentLine].Substring(zoneData[currentLine].IndexOf('x') + 1);
+                    enemyBox.Items.Add(GameData.TranslateVSText(enemy));
+                    zoneEnemiesIndex[numEnemies] = currentLine;
+                    numEnemies++;
+                }
+
+                currentLine++;
             }
 
             if (enemyBox.Items.Count > 0)
                 enemyBox.SelectedIndex = 0;
-
-            enemyReader.Close();
         }
 
         private void saveEnemy_Click(object sender, EventArgs e)
         {
             savingLabel.Visible = true;
             savingLabel.Refresh();
+            saveEnemyBtn.Enabled = false;
+            compileButton.Enabled = false;
 
             /* Loop through all ASM files and multipy each enemy's stat value */
             if (multModeCheckBox.Checked)
@@ -172,127 +170,137 @@ namespace VSStatsEditor
                 string asmPath = String.Format("{0}{1}", zonesDir, Path.DirectorySeparatorChar);
                 string[] asmFiles = Directory.GetFiles(asmPath, "*.ASM", SearchOption.TopDirectoryOnly);
 
+                double newVal;
+                int currentLine;
+                int numEnemies;
+                string enemy;
                 foreach (string curZonePath in asmFiles)
                 {
-                    string[] currentZone = File.ReadAllLines(curZonePath);
-                    StreamReader enemyReader = File.OpenText(curZonePath);
-                    string curEnemy;
-                    double newVal;
-
-                    while ((curEnemy = GetEnemyData(GameData.EnemyNameHeader, enemyReader)) != null)
+                    zoneData = File.ReadAllLines(curZonePath);
+                    currentLine = 0;
+                    numEnemies = 0;
+                    while (!zoneData[currentLine].Contains(GameData.EndStatsSection))
                     {
-                        newVal = Math.Truncate(UInt16.Parse(GetEnemyData(GameData.HPHeader, enemyReader), System.Globalization.NumberStyles.HexNumber) * Double.Parse(hpBox.Text));
-                        if (newVal > UInt16.MaxValue)
-                            newVal = UInt16.MaxValue;
+                        if (zoneData[currentLine].Contains(GameData.EnemyNameHeader))
+                        {
+                            enemy = zoneData[currentLine].Substring(zoneData[currentLine].IndexOf('x') + 1);
+                            zoneEnemiesIndex[numEnemies] = currentLine;
+                            numEnemies++;
+                        }
 
-                        SetEnemyData(currentZone, curEnemy, GameData.HPHeader, UInt16.Parse(newVal.ToString()).ToString("X4"));
-
-                        newVal = Math.Truncate(UInt16.Parse(GetEnemyData(GameData.MPHeader, enemyReader), System.Globalization.NumberStyles.HexNumber) * Double.Parse(mpBox.Text));
-                        if (newVal > UInt16.MaxValue)
-                            newVal = UInt16.MaxValue;
-
-                        SetEnemyData(currentZone, curEnemy, GameData.MPHeader, UInt16.Parse(newVal.ToString()).ToString("X4"));
-
-                        newVal = Math.Truncate(Byte.Parse(GetEnemyData(GameData.STRHeader, enemyReader), System.Globalization.NumberStyles.HexNumber) * Double.Parse(strBox.Text));
-                        if (newVal > Byte.MaxValue)
-                            newVal = Byte.MaxValue;
-
-                        SetEnemyData(currentZone, curEnemy, GameData.STRHeader, Byte.Parse(newVal.ToString()).ToString("X2"));
-
-                        newVal = Math.Truncate(Byte.Parse(GetEnemyData(GameData.INTHeader, enemyReader), System.Globalization.NumberStyles.HexNumber) * Double.Parse(intBox.Text));
-                        if (newVal > Byte.MaxValue)
-                            newVal = Byte.MaxValue;
-
-                        SetEnemyData(currentZone, curEnemy, GameData.INTHeader, Byte.Parse(newVal.ToString()).ToString("X2"));
-
-                        newVal = Math.Truncate(Byte.Parse(GetEnemyData(GameData.AGIHeader, enemyReader), System.Globalization.NumberStyles.HexNumber) * Double.Parse(agiBox.Text));
-                        if (newVal > Byte.MaxValue)
-                            newVal = Byte.MaxValue;
-
-                        SetEnemyData(currentZone, curEnemy, GameData.AGIHeader, Byte.Parse(newVal.ToString()).ToString("X2"));
-
-                        newVal = Math.Truncate(Byte.Parse(GetEnemyData(GameData.RunSpeedHeader, enemyReader), System.Globalization.NumberStyles.HexNumber) * Double.Parse(runSpeedBox.Text));
-                        if (newVal > Byte.MaxValue)
-                            newVal = Byte.MaxValue;
-                        SetEnemyData(currentZone, curEnemy, GameData.RunSpeedHeader, Byte.Parse(newVal.ToString()).ToString("X2"));
-
-                        /* Update body hp values */
-                        newVal = Math.Truncate(UInt16.Parse(GetEnemyData(GameData.BodyPart0HPHeader, enemyReader), System.Globalization.NumberStyles.HexNumber) * Double.Parse(hpBox.Text));
-                        if (newVal > UInt16.MaxValue)
-                            newVal = UInt16.MaxValue;
-                        SetEnemyData(currentZone, curEnemy, GameData.BodyPart0HPHeader, UInt16.Parse(newVal.ToString()).ToString("X4"));
-
-                        newVal = Math.Truncate(UInt16.Parse(GetEnemyData(GameData.BodyPart1HPHeader, enemyReader), System.Globalization.NumberStyles.HexNumber) * Double.Parse(hpBox.Text));
-                        if (newVal > UInt16.MaxValue)
-                            newVal = UInt16.MaxValue;
-                        SetEnemyData(currentZone, curEnemy, GameData.BodyPart1HPHeader, UInt16.Parse(newVal.ToString()).ToString("X4"));
-
-                        newVal = Math.Truncate(UInt16.Parse(GetEnemyData(GameData.BodyPart2HPHeader, enemyReader), System.Globalization.NumberStyles.HexNumber) * Double.Parse(hpBox.Text));
-                        if (newVal > UInt16.MaxValue)
-                            newVal = UInt16.MaxValue;
-                        SetEnemyData(currentZone, curEnemy, GameData.BodyPart2HPHeader, UInt16.Parse(newVal.ToString()).ToString("X4"));
-
-                        newVal = Math.Truncate(UInt16.Parse(GetEnemyData(GameData.BodyPart3HPHeader, enemyReader), System.Globalization.NumberStyles.HexNumber) * Double.Parse(hpBox.Text));
-                        if (newVal > UInt16.MaxValue)
-                            newVal = UInt16.MaxValue;
-                        SetEnemyData(currentZone, curEnemy, GameData.BodyPart3HPHeader, UInt16.Parse(newVal.ToString()).ToString("X4"));
-
-                        newVal = Math.Truncate(UInt16.Parse(GetEnemyData(GameData.BodyPart4HPHeader, enemyReader), System.Globalization.NumberStyles.HexNumber) * Double.Parse(hpBox.Text));
-                        if (newVal > UInt16.MaxValue)
-                            newVal = UInt16.MaxValue;
-                        SetEnemyData(currentZone, curEnemy, GameData.BodyPart4HPHeader, UInt16.Parse(newVal.ToString()).ToString("X4"));
-
-                        newVal = Math.Truncate(UInt16.Parse(GetEnemyData(GameData.BodyPart5HPHeader, enemyReader), System.Globalization.NumberStyles.HexNumber) * Double.Parse(hpBox.Text));
-                        if (newVal > UInt16.MaxValue)
-                            newVal = UInt16.MaxValue;
-                        SetEnemyData(currentZone, curEnemy, GameData.BodyPart5HPHeader, UInt16.Parse(newVal.ToString()).ToString("X4"));
+                        currentLine++;
                     }
 
-                    enemyReader.Close();
-                    File.WriteAllLines(curZonePath, currentZone);
+                    for (int curEnemy = 0; curEnemy < numEnemies; curEnemy++)
+                    {
+                        newVal = Math.Truncate(UInt16.Parse(GetEnemyData(GameData.HPHeader, zoneEnemiesIndex[curEnemy]), System.Globalization.NumberStyles.HexNumber) * Double.Parse(hpBox.Text));
+                        if (newVal > UInt16.MaxValue)
+                            newVal = UInt16.MaxValue;
+
+                        SetEnemyData(GameData.HPHeader, zoneEnemiesIndex[curEnemy], UInt16.Parse(newVal.ToString()).ToString("X4"));
+
+                        newVal = Math.Truncate(UInt16.Parse(GetEnemyData(GameData.MPHeader, zoneEnemiesIndex[curEnemy]), System.Globalization.NumberStyles.HexNumber) * Double.Parse(mpBox.Text));
+                        if (newVal > UInt16.MaxValue)
+                            newVal = UInt16.MaxValue;
+
+                        SetEnemyData(GameData.MPHeader, zoneEnemiesIndex[curEnemy], UInt16.Parse(newVal.ToString()).ToString("X4"));
+
+                        newVal = Math.Truncate(Byte.Parse(GetEnemyData(GameData.STRHeader, zoneEnemiesIndex[curEnemy]), System.Globalization.NumberStyles.HexNumber) * Double.Parse(strBox.Text));
+                        if (newVal > Byte.MaxValue)
+                            newVal = Byte.MaxValue;
+
+                        SetEnemyData(GameData.STRHeader, zoneEnemiesIndex[curEnemy], Byte.Parse(newVal.ToString()).ToString("X2"));
+
+                        newVal = Math.Truncate(Byte.Parse(GetEnemyData(GameData.INTHeader, zoneEnemiesIndex[curEnemy]), System.Globalization.NumberStyles.HexNumber) * Double.Parse(intBox.Text));
+                        if (newVal > Byte.MaxValue)
+                            newVal = Byte.MaxValue;
+
+                        SetEnemyData(GameData.INTHeader, zoneEnemiesIndex[curEnemy], Byte.Parse(newVal.ToString()).ToString("X2"));
+
+                        newVal = Math.Truncate(Byte.Parse(GetEnemyData(GameData.AGIHeader, zoneEnemiesIndex[curEnemy]), System.Globalization.NumberStyles.HexNumber) * Double.Parse(agiBox.Text));
+                        if (newVal > Byte.MaxValue)
+                            newVal = Byte.MaxValue;
+
+                        SetEnemyData(GameData.AGIHeader, zoneEnemiesIndex[curEnemy], Byte.Parse(newVal.ToString()).ToString("X2"));
+
+                        newVal = Math.Truncate(Byte.Parse(GetEnemyData(GameData.RunSpeedHeader, zoneEnemiesIndex[curEnemy]), System.Globalization.NumberStyles.HexNumber) * Double.Parse(runSpeedBox.Text));
+                        if (newVal > Byte.MaxValue)
+                            newVal = Byte.MaxValue;
+                        SetEnemyData(GameData.RunSpeedHeader, zoneEnemiesIndex[curEnemy], Byte.Parse(newVal.ToString()).ToString("X2"));
+
+                        /* Update body hp values */
+                        newVal = Math.Truncate(UInt16.Parse(GetEnemyData(GameData.BodyPart0HPHeader, zoneEnemiesIndex[curEnemy]), System.Globalization.NumberStyles.HexNumber) * Double.Parse(hpBox.Text));
+                        if (newVal > UInt16.MaxValue)
+                            newVal = UInt16.MaxValue;
+                        SetEnemyData(GameData.BodyPart0HPHeader, zoneEnemiesIndex[curEnemy], UInt16.Parse(newVal.ToString()).ToString("X4"));
+
+                        newVal = Math.Truncate(UInt16.Parse(GetEnemyData(GameData.BodyPart1HPHeader, zoneEnemiesIndex[curEnemy]), System.Globalization.NumberStyles.HexNumber) * Double.Parse(hpBox.Text));
+                        if (newVal > UInt16.MaxValue)
+                            newVal = UInt16.MaxValue;
+                        SetEnemyData(GameData.BodyPart1HPHeader, zoneEnemiesIndex[curEnemy], UInt16.Parse(newVal.ToString()).ToString("X4"));
+
+                        newVal = Math.Truncate(UInt16.Parse(GetEnemyData(GameData.BodyPart2HPHeader, zoneEnemiesIndex[curEnemy]), System.Globalization.NumberStyles.HexNumber) * Double.Parse(hpBox.Text));
+                        if (newVal > UInt16.MaxValue)
+                            newVal = UInt16.MaxValue;
+                        SetEnemyData(GameData.BodyPart2HPHeader, zoneEnemiesIndex[curEnemy], UInt16.Parse(newVal.ToString()).ToString("X4"));
+
+                        newVal = Math.Truncate(UInt16.Parse(GetEnemyData(GameData.BodyPart3HPHeader, zoneEnemiesIndex[curEnemy]), System.Globalization.NumberStyles.HexNumber) * Double.Parse(hpBox.Text));
+                        if (newVal > UInt16.MaxValue)
+                            newVal = UInt16.MaxValue;
+                        SetEnemyData(GameData.BodyPart3HPHeader, zoneEnemiesIndex[curEnemy], UInt16.Parse(newVal.ToString()).ToString("X4"));
+
+                        newVal = Math.Truncate(UInt16.Parse(GetEnemyData(GameData.BodyPart4HPHeader, zoneEnemiesIndex[curEnemy]), System.Globalization.NumberStyles.HexNumber) * Double.Parse(hpBox.Text));
+                        if (newVal > UInt16.MaxValue)
+                            newVal = UInt16.MaxValue;
+                        SetEnemyData(GameData.BodyPart4HPHeader, zoneEnemiesIndex[curEnemy], UInt16.Parse(newVal.ToString()).ToString("X4"));
+
+                        newVal = Math.Truncate(UInt16.Parse(GetEnemyData(GameData.BodyPart5HPHeader, zoneEnemiesIndex[curEnemy]), System.Globalization.NumberStyles.HexNumber) * Double.Parse(hpBox.Text));
+                        if (newVal > UInt16.MaxValue)
+                            newVal = UInt16.MaxValue;
+                        SetEnemyData(GameData.BodyPart5HPHeader, zoneEnemiesIndex[curEnemy], UInt16.Parse(newVal.ToString()).ToString("X4"));
+                    }
+
+                    File.WriteAllLines(curZonePath, zoneData);
                 }
             }
-
             /* Save single enemy */
             else
             {
                 if (enemyBox.SelectedIndex > -1)
                 {
                     /* Enemy stats are already validated at this point */
-                    /* Read in current ASM file */
-                    string asmPath = String.Format("{0}{1}{2}.ASM", zonesDir, Path.DirectorySeparatorChar, zoneBox.SelectedItem.ToString());
-                    string[] currentZone = File.ReadAllLines(asmPath);
+                    /* Write stats and drop rates and equip */
+                    SetEnemyData(GameData.HPHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], UInt16.Parse(hpBox.Text).ToString("X4"));
+                    SetEnemyData(GameData.MPHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], UInt16.Parse(mpBox.Text).ToString("X4"));
+                    SetEnemyData(GameData.STRHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], Byte.Parse(strBox.Text).ToString("X2"));
+                    SetEnemyData(GameData.INTHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], Byte.Parse(intBox.Text).ToString("X2"));
+                    SetEnemyData(GameData.AGIHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], Byte.Parse(agiBox.Text).ToString("X2"));
+                    SetEnemyData(GameData.RunSpeedHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], Byte.Parse(runSpeedBox.Text).ToString("X2"));
 
-                    /* Write stats and drop rates for now */
-                    SetEnemyData(currentZone, zoneEnemies[enemyBox.SelectedIndex], GameData.HPHeader, UInt16.Parse(hpBox.Text).ToString("X4"));
-                    SetEnemyData(currentZone, zoneEnemies[enemyBox.SelectedIndex], GameData.MPHeader, UInt16.Parse(mpBox.Text).ToString("X4"));
-                    SetEnemyData(currentZone, zoneEnemies[enemyBox.SelectedIndex], GameData.STRHeader, Byte.Parse(strBox.Text).ToString("X2"));
-                    SetEnemyData(currentZone, zoneEnemies[enemyBox.SelectedIndex], GameData.INTHeader, Byte.Parse(intBox.Text).ToString("X2"));
-                    SetEnemyData(currentZone, zoneEnemies[enemyBox.SelectedIndex], GameData.AGIHeader, Byte.Parse(agiBox.Text).ToString("X2"));
-                    SetEnemyData(currentZone, zoneEnemies[enemyBox.SelectedIndex], GameData.RunSpeedHeader, Byte.Parse(runSpeedBox.Text).ToString("X2"));
-
-                    SetEnemyData(currentZone, zoneEnemies[enemyBox.SelectedIndex], GameData.WeaponDropChanceHeader, ((Byte)Math.Truncate(double.Parse(weapDropRateBox.Text) / 100.0d * 255.0d)).ToString("X2"));
-                    SetEnemyData(currentZone, zoneEnemies[enemyBox.SelectedIndex], GameData.ShieldDropChanceHeader, ((Byte)Math.Truncate(double.Parse(shieldDropRateBox.Text) / 100.0d * 255.0d)).ToString("X2"));
-                    SetEnemyData(currentZone, zoneEnemies[enemyBox.SelectedIndex], GameData.AccDropChanceHeader, ((Byte)Math.Truncate(double.Parse(accDropRateBox.Text) / 100.0d * 255.0d)).ToString("X2"));
-                    SetEnemyData(currentZone, zoneEnemies[enemyBox.SelectedIndex], GameData.BodyPart0DropChanceHeader, ((Byte)Math.Truncate(double.Parse(bp0DropBox.Text) / 100.0d * 255.0d)).ToString("X2"));
-                    SetEnemyData(currentZone, zoneEnemies[enemyBox.SelectedIndex], GameData.BodyPart1DropChanceHeader, ((Byte)Math.Truncate(double.Parse(bp1DropBox.Text) / 100.0d * 255.0d)).ToString("X2"));
-                    SetEnemyData(currentZone, zoneEnemies[enemyBox.SelectedIndex], GameData.BodyPart2DropChanceHeader, ((Byte)Math.Truncate(double.Parse(bp2DropBox.Text) / 100.0d * 255.0d)).ToString("X2"));
-                    SetEnemyData(currentZone, zoneEnemies[enemyBox.SelectedIndex], GameData.BodyPart3DropChanceHeader, ((Byte)Math.Truncate(double.Parse(bp3DropBox.Text) / 100.0d * 255.0d)).ToString("X2"));
-                    SetEnemyData(currentZone, zoneEnemies[enemyBox.SelectedIndex], GameData.BodyPart4DropChanceHeader, ((Byte)Math.Truncate(double.Parse(bp4DropBox.Text) / 100.0d * 255.0d)).ToString("X2"));
-                    SetEnemyData(currentZone, zoneEnemies[enemyBox.SelectedIndex], GameData.BodyPart5DropChanceHeader, ((Byte)Math.Truncate(double.Parse(bp5DropBox.Text) / 100.0d * 255.0d)).ToString("X2"));
+                    SetEnemyData(GameData.WeaponDropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], ((Byte)Math.Truncate(double.Parse(weapDropRateBox.Text) / 100.0d * 255.0d)).ToString("X2"));
+                    SetEnemyData(GameData.ShieldDropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], ((Byte)Math.Truncate(double.Parse(shieldDropRateBox.Text) / 100.0d * 255.0d)).ToString("X2"));
+                    SetEnemyData(GameData.AccDropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], ((Byte)Math.Truncate(double.Parse(accDropRateBox.Text) / 100.0d * 255.0d)).ToString("X2"));
+                    SetEnemyData(GameData.BodyPart0DropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], ((Byte)Math.Truncate(double.Parse(bp0DropBox.Text) / 100.0d * 255.0d)).ToString("X2"));
+                    SetEnemyData(GameData.BodyPart1DropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], ((Byte)Math.Truncate(double.Parse(bp1DropBox.Text) / 100.0d * 255.0d)).ToString("X2"));
+                    SetEnemyData(GameData.BodyPart2DropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], ((Byte)Math.Truncate(double.Parse(bp2DropBox.Text) / 100.0d * 255.0d)).ToString("X2"));
+                    SetEnemyData(GameData.BodyPart3DropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], ((Byte)Math.Truncate(double.Parse(bp3DropBox.Text) / 100.0d * 255.0d)).ToString("X2"));
+                    SetEnemyData(GameData.BodyPart4DropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], ((Byte)Math.Truncate(double.Parse(bp4DropBox.Text) / 100.0d * 255.0d)).ToString("X2"));
+                    SetEnemyData(GameData.BodyPart5DropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], ((Byte)Math.Truncate(double.Parse(bp5DropBox.Text) / 100.0d * 255.0d)).ToString("X2"));
 
                     /* Update body hp values */
-                    SetEnemyData(currentZone, zoneEnemies[enemyBox.SelectedIndex], GameData.BodyPart0HPHeader, curEnemyBodyPartHPs[0].ToString("X4"));
-                    SetEnemyData(currentZone, zoneEnemies[enemyBox.SelectedIndex], GameData.BodyPart1HPHeader, curEnemyBodyPartHPs[1].ToString("X4"));
-                    SetEnemyData(currentZone, zoneEnemies[enemyBox.SelectedIndex], GameData.BodyPart2HPHeader, curEnemyBodyPartHPs[2].ToString("X4"));
-                    SetEnemyData(currentZone, zoneEnemies[enemyBox.SelectedIndex], GameData.BodyPart3HPHeader, curEnemyBodyPartHPs[3].ToString("X4"));
-                    SetEnemyData(currentZone, zoneEnemies[enemyBox.SelectedIndex], GameData.BodyPart4HPHeader, curEnemyBodyPartHPs[4].ToString("X4"));
-                    SetEnemyData(currentZone, zoneEnemies[enemyBox.SelectedIndex], GameData.BodyPart5HPHeader, curEnemyBodyPartHPs[5].ToString("X4"));
+                    SetEnemyData(GameData.BodyPart0HPHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], curEnemyBodyPartHPs[0].ToString("X4"));
+                    SetEnemyData(GameData.BodyPart1HPHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], curEnemyBodyPartHPs[1].ToString("X4"));
+                    SetEnemyData(GameData.BodyPart2HPHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], curEnemyBodyPartHPs[2].ToString("X4"));
+                    SetEnemyData(GameData.BodyPart3HPHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], curEnemyBodyPartHPs[3].ToString("X4"));
+                    SetEnemyData(GameData.BodyPart4HPHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], curEnemyBodyPartHPs[4].ToString("X4"));
+                    SetEnemyData(GameData.BodyPart5HPHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], curEnemyBodyPartHPs[5].ToString("X4"));
 
-                    File.WriteAllLines(asmPath, currentZone);
+                    File.WriteAllLines(String.Format("{0}{1}{2}.ASM", zonesDir, Path.DirectorySeparatorChar, zoneBox.SelectedItem.ToString()), zoneData);
                 }
             }
             savingLabel.Visible = false;
+            saveEnemyBtn.Enabled = true;
+            compileButton.Enabled = true;
         }
 
         private void loadZonesBtn_Click(object sender, EventArgs e)
@@ -327,27 +335,19 @@ namespace VSStatsEditor
             }
         }
 
-        private string GetEnemyData(string statName, StreamReader reader)
+        private string GetEnemyData(string statName, int enemyIndex)
         {
-            string line;
-            while ((line = reader.ReadLine()) != null)
-            {
-                if (line.Contains(statName))
-                    return line.Substring(line.IndexOf('x') + 1);
-            }
-            return null;
+            /* Jump to stat name */
+            while (!zoneData[++enemyIndex].Contains(statName)) ;
+            return zoneData[enemyIndex].Substring(zoneData[enemyIndex].IndexOf('x') + 1);
         }
 
-        private void SetEnemyData(string[] currentZone, string enemyName, string statName, string newVal)
+        private void SetEnemyData(string statName, int enemyIndex, string newVal)
         {
-            /* Find enemy to edit */
-            var enemyIndex = Array.FindIndex(currentZone, row => row.Contains(enemyName));
-
-            /* Jump to enemy's stat to edit */
-            while (!currentZone[++enemyIndex].Contains(statName)) ;
-
-            /* Repalce data */
-            currentZone[enemyIndex] = currentZone[enemyIndex].Replace(currentZone[enemyIndex].Substring(currentZone[enemyIndex].IndexOf('x') + 1), newVal);
+            /* Jump to stat name and replace */
+            while (!zoneData[++enemyIndex].Contains(statName)) ;
+            string currentStatVal = zoneData[enemyIndex].Substring(zoneData[enemyIndex].IndexOf('x') + 1);
+            zoneData[enemyIndex] = zoneData[enemyIndex].Replace(currentStatVal, newVal);
         }
 
         private void Validate2Byte(object sender, EventArgs e)
@@ -375,7 +375,7 @@ namespace VSStatsEditor
                 UInt16 val = Convert.ToUInt16(((TextBox)sender).Text);
 
                 /* There seems to be a glitch that causes the enemy to do nothing if the sum of the body parts HP
-                 * is less than the enemy's total HP.  The body part HP values do NOT have to add up exactly to the 
+                 * is less than the enemy's total HP.  The body part HP values do NOT have to add up exactly to the
                  * total HP though.  To make it easier, we'll just use some common multipliers on each body part */
 
                 /* Enemy has only 1 body part */
@@ -515,6 +515,9 @@ namespace VSStatsEditor
 
         private void compileButton_Click(object sender, EventArgs e)
         {
+            saveEnemyBtn.Enabled = false;
+            compileButton.Enabled = false;
+
             /* Send all ASM files through the assembler and output to same directory */
             Process asmToZnd = new Process();
             asmToZnd.StartInfo.FileName = GameData.AsmToZndTool;
@@ -532,6 +535,9 @@ namespace VSStatsEditor
                 };
                 compLabel.Visible = false;
             }
+
+            saveEnemyBtn.Enabled = true;
+            compileButton.Enabled = true;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
