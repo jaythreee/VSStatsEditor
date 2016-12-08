@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.label1 = new System.Windows.Forms.Label();
             this.eneLabel = new System.Windows.Forms.Label();
@@ -135,7 +134,6 @@
             this.compileButton = new System.Windows.Forms.Button();
             this.compLabel = new System.Windows.Forms.Label();
             this.savingLabel = new System.Windows.Forms.Label();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.statsGroupBox.SuspendLayout();
             this.equipGroupBox.SuspendLayout();
             this.SuspendLayout();
@@ -892,6 +890,7 @@
             this.bp1NameBox.Size = new System.Drawing.Size(121, 21);
             this.bp1NameBox.TabIndex = 41;
             this.bp1NameBox.TabStop = false;
+            this.bp1NameBox.SelectedIndexChanged += new System.EventHandler(this.bp1NameBox_SelectedIndexChanged);
             // 
             // bp4NameBox
             // 
@@ -902,6 +901,7 @@
             this.bp4NameBox.Size = new System.Drawing.Size(121, 21);
             this.bp4NameBox.TabIndex = 39;
             this.bp4NameBox.TabStop = false;
+            this.bp4NameBox.SelectedIndexChanged += new System.EventHandler(this.bp4NameBox_SelectedIndexChanged);
             // 
             // bp3NameBox
             // 
@@ -912,6 +912,7 @@
             this.bp3NameBox.Size = new System.Drawing.Size(121, 21);
             this.bp3NameBox.TabIndex = 37;
             this.bp3NameBox.TabStop = false;
+            this.bp3NameBox.SelectedIndexChanged += new System.EventHandler(this.bp3NameBox_SelectedIndexChanged);
             // 
             // bp5NameBox
             // 
@@ -922,6 +923,7 @@
             this.bp5NameBox.Size = new System.Drawing.Size(121, 21);
             this.bp5NameBox.TabIndex = 38;
             this.bp5NameBox.TabStop = false;
+            this.bp5NameBox.SelectedIndexChanged += new System.EventHandler(this.bp5NameBox_SelectedIndexChanged);
             // 
             // bp2NameBox
             // 
@@ -932,6 +934,7 @@
             this.bp2NameBox.Size = new System.Drawing.Size(121, 21);
             this.bp2NameBox.TabIndex = 36;
             this.bp2NameBox.TabStop = false;
+            this.bp2NameBox.SelectedIndexChanged += new System.EventHandler(this.bp2NameBox_SelectedIndexChanged);
             // 
             // bp0NameBox
             // 
@@ -942,6 +945,7 @@
             this.bp0NameBox.Size = new System.Drawing.Size(121, 21);
             this.bp0NameBox.TabIndex = 35;
             this.bp0NameBox.TabStop = false;
+            this.bp0NameBox.SelectedIndexChanged += new System.EventHandler(this.bp0NameBox_SelectedIndexChanged);
             // 
             // accBox
             // 
@@ -1115,6 +1119,7 @@
             this.gripBox.Size = new System.Drawing.Size(121, 21);
             this.gripBox.TabIndex = 11;
             this.gripBox.TabStop = false;
+            this.gripBox.SelectedIndexChanged += new System.EventHandler(this.gripBox_SelectedIndexChanged);
             // 
             // bladeBox
             // 
@@ -1125,6 +1130,7 @@
             this.bladeBox.Size = new System.Drawing.Size(121, 21);
             this.bladeBox.TabIndex = 10;
             this.bladeBox.TabStop = false;
+            this.bladeBox.SelectedIndexChanged += new System.EventHandler(this.bladeBox_SelectedIndexChanged);
             // 
             // label9
             // 
@@ -1379,7 +1385,6 @@
         private System.Windows.Forms.Button compileButton;
         private System.Windows.Forms.Label compLabel;
         private System.Windows.Forms.Label savingLabel;
-        private System.Windows.Forms.Timer timer1;
     }
 }
 

@@ -17,8 +17,83 @@ namespace VSStatsEditor
         public MainForm()
         {
             InitializeComponent();
+
             string version = Application.ProductVersion;
             this.Text = String.Format("VS Stat Editor v{0}", version);
+
+            /* Setup equipment lists */
+            bladeBox.DataSource = new BindingSource(GameData.Blades, null);
+            bladeBox.DisplayMember = "Value";
+            bladeBox.ValueMember = "Key";
+            bladeMatBox.DataSource = new BindingSource(GameData.Materials, null);
+            bladeMatBox.DisplayMember = "Value";
+            bladeMatBox.ValueMember = "Key";
+            gripBox.DataSource = new BindingSource(GameData.Grips, null);
+            gripBox.DisplayMember = "Value";
+            gripBox.ValueMember = "Key";
+            weapGem1Box.DataSource = new BindingSource(GameData.Gems, null);
+            weapGem1Box.DisplayMember = "Value";
+            weapGem1Box.ValueMember = "Key";
+            weapGem2Box.DataSource = new BindingSource(GameData.Gems, null);
+            weapGem2Box.DisplayMember = "Value";
+            weapGem2Box.ValueMember = "Key";
+            weapGem3Box.DataSource = new BindingSource(GameData.Gems, null);
+            weapGem3Box.DisplayMember = "Value";
+            weapGem3Box.ValueMember = "Key";
+            shieldBox.DataSource = new BindingSource(GameData.Shields, null);
+            shieldBox.DisplayMember = "Value";
+            shieldBox.ValueMember = "Key";
+            shieldMatBox.DataSource = new BindingSource(GameData.Materials, null);
+            shieldMatBox.DisplayMember = "Value";
+            shieldMatBox.ValueMember = "Key";
+            shieldGem1Box.DataSource = new BindingSource(GameData.Gems, null);
+            shieldGem1Box.DisplayMember = "Value";
+            shieldGem1Box.ValueMember = "Key";
+            shieldGem2Box.DataSource = new BindingSource(GameData.Gems, null);
+            shieldGem2Box.DisplayMember = "Value";
+            shieldGem2Box.ValueMember = "Key";
+            shieldGem3Box.DataSource = new BindingSource(GameData.Gems, null);
+            shieldGem3Box.DisplayMember = "Value";
+            shieldGem3Box.ValueMember = "Key";
+            accBox.DataSource = new BindingSource(GameData.Acc, null);
+            accBox.DisplayMember = "Value";
+            accBox.ValueMember = "Key";
+            bp0NameBox.DataSource = new BindingSource(GameData.OtherItems, null);
+            bp0NameBox.DisplayMember = "Value";
+            bp0NameBox.ValueMember = "Key";
+            bp0MatBox.DataSource = new BindingSource(GameData.Materials, null);
+            bp0MatBox.DisplayMember = "Value";
+            bp0MatBox.ValueMember = "Key";
+            bp1NameBox.DataSource = new BindingSource(GameData.OtherItems, null);
+            bp1NameBox.DisplayMember = "Value";
+            bp1NameBox.ValueMember = "Key";
+            bp1MatBox.DataSource = new BindingSource(GameData.Materials, null);
+            bp1MatBox.DisplayMember = "Value";
+            bp1MatBox.ValueMember = "Key";
+            bp2NameBox.DataSource = new BindingSource(GameData.OtherItems, null);
+            bp2NameBox.DisplayMember = "Value";
+            bp2NameBox.ValueMember = "Key";
+            bp2MatBox.DataSource = new BindingSource(GameData.Materials, null);
+            bp2MatBox.DisplayMember = "Value";
+            bp2MatBox.ValueMember = "Key";
+            bp3NameBox.DataSource = new BindingSource(GameData.OtherItems, null);
+            bp3NameBox.DisplayMember = "Value";
+            bp3NameBox.ValueMember = "Key";
+            bp3MatBox.DataSource = new BindingSource(GameData.Materials, null);
+            bp3MatBox.DisplayMember = "Value";
+            bp3MatBox.ValueMember = "Key";
+            bp4NameBox.DataSource = new BindingSource(GameData.OtherItems, null);
+            bp4NameBox.DisplayMember = "Value";
+            bp4NameBox.ValueMember = "Key";
+            bp4MatBox.DataSource = new BindingSource(GameData.Materials, null);
+            bp4MatBox.DisplayMember = "Value";
+            bp4MatBox.ValueMember = "Key";
+            bp5NameBox.DataSource = new BindingSource(GameData.OtherItems, null);
+            bp5NameBox.DisplayMember = "Value";
+            bp5NameBox.ValueMember = "Key";
+            bp5MatBox.DataSource = new BindingSource(GameData.Materials, null);
+            bp5MatBox.DisplayMember = "Value";
+            bp5MatBox.ValueMember = "Key";
         }
 
         private void LoadZones()
@@ -51,79 +126,55 @@ namespace VSStatsEditor
 
             /* Equipment and droprates */
             /* Weapon */
-            bladeBox.Items.Add(GameData.ItemNames[GetEnemyData(GameData.WeaponNameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
-            bladeBox.SelectedIndex = 0;
-            gripBox.Items.Add(GameData.ItemNames[GetEnemyData(GameData.WeaponGripNameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
-            gripBox.SelectedIndex = 0;
-            weapGem1Box.Items.Add(GameData.ItemNames[GetEnemyData(GameData.WeaponGem1Header, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
-            weapGem1Box.SelectedIndex = 0;
-            weapGem2Box.Items.Add(GameData.ItemNames[GetEnemyData(GameData.WeaponGem2Header, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
-            weapGem2Box.SelectedIndex = 0;
-            weapGem3Box.Items.Add(GameData.ItemNames[GetEnemyData(GameData.WeaponGem3Header, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
-            weapGem3Box.SelectedIndex = 0;
-            bladeMatBox.Items.Add(GameData.Materials[GetEnemyData(GameData.WeaponMatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
-            bladeMatBox.SelectedIndex = 0;
+            bladeBox.SelectedValue = GetEnemyData(GameData.WeaponNameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]);
+            gripBox.SelectedValue = GetEnemyData(GameData.WeaponGripNameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]);
+            weapGem1Box.SelectedValue = GetEnemyData(GameData.WeaponGem1Header, zoneEnemiesIndex[enemyBox.SelectedIndex]);
+            weapGem2Box.SelectedValue = GetEnemyData(GameData.WeaponGem2Header, zoneEnemiesIndex[enemyBox.SelectedIndex]);
+            weapGem3Box.SelectedValue = GetEnemyData(GameData.WeaponGem3Header, zoneEnemiesIndex[enemyBox.SelectedIndex]);
+            bladeMatBox.SelectedValue = GetEnemyData(GameData.WeaponMatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]);
             weapDropRateBox.Text = (UInt16.Parse(GetEnemyData(GameData.WeaponDropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), System.Globalization.NumberStyles.HexNumber) / 255.0d * 100).ToString("0.00");
 
             /* Shield */
-            shieldBox.Items.Add(GameData.ItemNames[GetEnemyData(GameData.ShieldNameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
-            shieldBox.SelectedIndex = 0;
-            weapGem1Box.Items.Add(GameData.ItemNames[GetEnemyData(GameData.ShieldGem1Header, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
-            weapGem1Box.SelectedIndex = 0;
-            weapGem2Box.Items.Add(GameData.ItemNames[GetEnemyData(GameData.ShieldGem2Header, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
-            weapGem2Box.SelectedIndex = 0;
-            weapGem3Box.Items.Add(GameData.ItemNames[GetEnemyData(GameData.ShieldGem3Header, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
-            weapGem3Box.SelectedIndex = 0;
-            shieldMatBox.Items.Add(GameData.Materials[GetEnemyData(GameData.ShieldMatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
-            shieldMatBox.SelectedIndex = 0;
+            shieldBox.SelectedValue = GetEnemyData(GameData.ShieldNameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]);
+            shieldGem1Box.SelectedValue = GetEnemyData(GameData.ShieldGem1Header, zoneEnemiesIndex[enemyBox.SelectedIndex]);
+            shieldGem2Box.SelectedValue = GetEnemyData(GameData.ShieldGem2Header, zoneEnemiesIndex[enemyBox.SelectedIndex]);
+            shieldGem3Box.SelectedValue = GetEnemyData(GameData.ShieldGem3Header, zoneEnemiesIndex[enemyBox.SelectedIndex]);
+            shieldMatBox.SelectedValue = GetEnemyData(GameData.ShieldMatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]);
             shieldDropRateBox.Text = (UInt16.Parse(GetEnemyData(GameData.ShieldDropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), System.Globalization.NumberStyles.HexNumber) / 255.0d * 100).ToString("0.00");
 
             /* Accessory */
-            accBox.Items.Add(GameData.ItemNames[GetEnemyData(GameData.AccNameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
-            accBox.SelectedIndex = 0;
+            accBox.SelectedValue = GetEnemyData(GameData.AccNameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]);
             accDropRateBox.Text = (UInt16.Parse(GetEnemyData(GameData.AccDropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), System.Globalization.NumberStyles.HexNumber) / 255.0d * 100).ToString("0.00");
 
             /* Bodypart HP / armors */
             curEnemyBodyPartHPs[0] = Convert.ToUInt16(GetEnemyData(GameData.BodyPart0HPHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), 16);
-            bp0NameBox.Items.Add(GameData.ItemNames[GetEnemyData(GameData.BodyPart0NameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
-            bp0NameBox.SelectedIndex = 0;
-            bp0MatBox.Items.Add(GameData.Materials[GetEnemyData(GameData.BodyPart0MatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
-            bp0MatBox.SelectedIndex = 0;
+            bp0NameBox.SelectedValue = GetEnemyData(GameData.BodyPart0NameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]);
+            bp0MatBox.SelectedValue = GetEnemyData(GameData.BodyPart0MatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]);
             bp0DropBox.Text = (UInt16.Parse(GetEnemyData(GameData.BodyPart0DropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), System.Globalization.NumberStyles.HexNumber) / 255.0d * 100).ToString("0.00");
 
             curEnemyBodyPartHPs[1] = Convert.ToUInt16(GetEnemyData(GameData.BodyPart1HPHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), 16);
-            bp1NameBox.Items.Add(GameData.ItemNames[GetEnemyData(GameData.BodyPart1NameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
-            bp1NameBox.SelectedIndex = 0;
-            bp1MatBox.Items.Add(GameData.Materials[GetEnemyData(GameData.BodyPart1MatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
-            bp1MatBox.SelectedIndex = 0;
+            bp1NameBox.SelectedValue = GetEnemyData(GameData.BodyPart1NameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]);
+            bp1MatBox.SelectedValue = GetEnemyData(GameData.BodyPart1MatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]);
             bp1DropBox.Text = (UInt16.Parse(GetEnemyData(GameData.BodyPart1DropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), System.Globalization.NumberStyles.HexNumber) / 255.0d * 100).ToString("0.00");
 
             curEnemyBodyPartHPs[2] = Convert.ToUInt16(GetEnemyData(GameData.BodyPart2HPHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), 16);
-            bp2NameBox.Items.Add(GameData.ItemNames[GetEnemyData(GameData.BodyPart2NameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
-            bp2NameBox.SelectedIndex = 0;
-            bp2MatBox.Items.Add(GameData.Materials[GetEnemyData(GameData.BodyPart2MatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
-            bp2MatBox.SelectedIndex = 0;
+            bp2NameBox.SelectedValue = GetEnemyData(GameData.BodyPart2NameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]);
+            bp2MatBox.SelectedValue = GetEnemyData(GameData.BodyPart2MatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]);
             bp2DropBox.Text = (UInt16.Parse(GetEnemyData(GameData.BodyPart2DropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), System.Globalization.NumberStyles.HexNumber) / 255.0d * 100).ToString("0.00");
 
             curEnemyBodyPartHPs[3] = Convert.ToUInt16(GetEnemyData(GameData.BodyPart3HPHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), 16);
-            bp3NameBox.Items.Add(GameData.ItemNames[GetEnemyData(GameData.BodyPart3NameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
-            bp3NameBox.SelectedIndex = 0;
-            bp3MatBox.Items.Add(GameData.Materials[GetEnemyData(GameData.BodyPart3MatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
-            bp3MatBox.SelectedIndex = 0;
+            bp3NameBox.SelectedValue = GetEnemyData(GameData.BodyPart3NameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]);
+            bp3MatBox.SelectedValue = GetEnemyData(GameData.BodyPart3MatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]);
             bp3DropBox.Text = (UInt16.Parse(GetEnemyData(GameData.BodyPart3DropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), System.Globalization.NumberStyles.HexNumber) / 255.0d * 100).ToString("0.00");
 
             curEnemyBodyPartHPs[4] = Convert.ToUInt16(GetEnemyData(GameData.BodyPart4HPHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), 16);
-            bp4NameBox.Items.Add(GameData.ItemNames[GetEnemyData(GameData.BodyPart4NameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
-            bp4NameBox.SelectedIndex = 0;
-            bp4MatBox.Items.Add(GameData.Materials[GetEnemyData(GameData.BodyPart4MatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
-            bp4MatBox.SelectedIndex = 0;
+            bp4NameBox.SelectedValue = GetEnemyData(GameData.BodyPart4NameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]);
+            bp4MatBox.SelectedValue = GetEnemyData(GameData.BodyPart4MatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]);
             bp4DropBox.Text = (UInt16.Parse(GetEnemyData(GameData.BodyPart4DropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), System.Globalization.NumberStyles.HexNumber) / 255.0d * 100).ToString("0.00");
 
             curEnemyBodyPartHPs[5] = Convert.ToUInt16(GetEnemyData(GameData.BodyPart5HPHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), 16);
-            bp5NameBox.Items.Add(GameData.ItemNames[GetEnemyData(GameData.BodyPart5NameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
-            bp5NameBox.SelectedIndex = 0;
-            bp5MatBox.Items.Add(GameData.Materials[GetEnemyData(GameData.BodyPart5MatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex])]);
-            bp5MatBox.SelectedIndex = 0;
+            bp5NameBox.SelectedValue = GetEnemyData(GameData.BodyPart5NameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]);
+            bp5MatBox.SelectedValue = GetEnemyData(GameData.BodyPart5MatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]);
             bp5DropBox.Text = (UInt16.Parse(GetEnemyData(GameData.BodyPart5DropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex]), System.Globalization.NumberStyles.HexNumber) / 255.0d * 100).ToString("0.00");
         }
 
@@ -268,8 +319,7 @@ namespace VSStatsEditor
             {
                 if (enemyBox.SelectedIndex > -1)
                 {
-                    /* Enemy stats are already validated at this point */
-                    /* Write stats and drop rates and equip */
+                    /* Enemy stats are already validated at this point. Write out stats, equipment, and drop rates */
                     SetEnemyData(GameData.HPHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], UInt16.Parse(hpBox.Text).ToString("X4"));
                     SetEnemyData(GameData.MPHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], UInt16.Parse(mpBox.Text).ToString("X4"));
                     SetEnemyData(GameData.STRHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], Byte.Parse(strBox.Text).ToString("X2"));
@@ -277,14 +327,46 @@ namespace VSStatsEditor
                     SetEnemyData(GameData.AGIHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], Byte.Parse(agiBox.Text).ToString("X2"));
                     SetEnemyData(GameData.RunSpeedHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], Byte.Parse(runSpeedBox.Text).ToString("X2"));
 
+                    SetEnemyData(GameData.WeaponNameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], bladeBox.SelectedValue.ToString());
+                    SetEnemyData(GameData.WeaponMatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], bladeMatBox.SelectedValue.ToString());
+                    SetEnemyData(GameData.WeaponGripNameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], gripBox.SelectedValue.ToString());
+                    SetEnemyData(GameData.WeaponGem1Header, zoneEnemiesIndex[enemyBox.SelectedIndex], weapGem1Box.SelectedValue.ToString());
+                    SetEnemyData(GameData.WeaponGem2Header, zoneEnemiesIndex[enemyBox.SelectedIndex], weapGem2Box.SelectedValue.ToString());
+                    SetEnemyData(GameData.WeaponGem3Header, zoneEnemiesIndex[enemyBox.SelectedIndex], weapGem3Box.SelectedValue.ToString());
                     SetEnemyData(GameData.WeaponDropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], ((Byte)Math.Truncate(double.Parse(weapDropRateBox.Text) / 100.0d * 255.0d)).ToString("X2"));
+
+                    SetEnemyData(GameData.ShieldNameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], shieldBox.SelectedValue.ToString());
+                    SetEnemyData(GameData.ShieldMatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], shieldMatBox.SelectedValue.ToString());
+                    SetEnemyData(GameData.ShieldGem1Header, zoneEnemiesIndex[enemyBox.SelectedIndex], shieldGem1Box.SelectedValue.ToString());
+                    SetEnemyData(GameData.ShieldGem2Header, zoneEnemiesIndex[enemyBox.SelectedIndex], shieldGem2Box.SelectedValue.ToString());
+                    SetEnemyData(GameData.ShieldGem3Header, zoneEnemiesIndex[enemyBox.SelectedIndex], shieldGem3Box.SelectedValue.ToString());
                     SetEnemyData(GameData.ShieldDropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], ((Byte)Math.Truncate(double.Parse(shieldDropRateBox.Text) / 100.0d * 255.0d)).ToString("X2"));
+
+                    SetEnemyData(GameData.AccNameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], accBox.SelectedValue.ToString());
                     SetEnemyData(GameData.AccDropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], ((Byte)Math.Truncate(double.Parse(accDropRateBox.Text) / 100.0d * 255.0d)).ToString("X2"));
+
+                    SetEnemyData(GameData.BodyPart0NameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], bp0NameBox.SelectedValue.ToString());
+                    SetEnemyData(GameData.BodyPart0MatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], bp0MatBox.SelectedValue.ToString());
                     SetEnemyData(GameData.BodyPart0DropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], ((Byte)Math.Truncate(double.Parse(bp0DropBox.Text) / 100.0d * 255.0d)).ToString("X2"));
+
+                    SetEnemyData(GameData.BodyPart1NameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], bp1NameBox.SelectedValue.ToString());
+                    SetEnemyData(GameData.BodyPart1MatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], bp1MatBox.SelectedValue.ToString());
                     SetEnemyData(GameData.BodyPart1DropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], ((Byte)Math.Truncate(double.Parse(bp1DropBox.Text) / 100.0d * 255.0d)).ToString("X2"));
+
+                    SetEnemyData(GameData.BodyPart2NameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], bp2NameBox.SelectedValue.ToString());
+                    SetEnemyData(GameData.BodyPart2MatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], bp2MatBox.SelectedValue.ToString());
                     SetEnemyData(GameData.BodyPart2DropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], ((Byte)Math.Truncate(double.Parse(bp2DropBox.Text) / 100.0d * 255.0d)).ToString("X2"));
+
+                    SetEnemyData(GameData.BodyPart3NameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], bp3NameBox.SelectedValue.ToString());
+                    SetEnemyData(GameData.BodyPart3MatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], bp3MatBox.SelectedValue.ToString());
                     SetEnemyData(GameData.BodyPart3DropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], ((Byte)Math.Truncate(double.Parse(bp3DropBox.Text) / 100.0d * 255.0d)).ToString("X2"));
+
+                    SetEnemyData(GameData.BodyPart4NameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], bp4NameBox.SelectedValue.ToString());
+                    SetEnemyData(GameData.BodyPart4MatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], bp4MatBox.SelectedValue.ToString());
                     SetEnemyData(GameData.BodyPart4DropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], ((Byte)Math.Truncate(double.Parse(bp4DropBox.Text) / 100.0d * 255.0d)).ToString("X2"));
+
+                    SetEnemyData(GameData.BodyPart5NameHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], bp5NameBox.SelectedValue.ToString());
+                    SetEnemyData(GameData.BodyPart5MatHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], bp5MatBox.SelectedValue.ToString());
                     SetEnemyData(GameData.BodyPart5DropChanceHeader, zoneEnemiesIndex[enemyBox.SelectedIndex], ((Byte)Math.Truncate(double.Parse(bp5DropBox.Text) / 100.0d * 255.0d)).ToString("X2"));
 
                     /* Update body hp values */
@@ -317,17 +399,6 @@ namespace VSStatsEditor
 
         private void ClearCurrentEnemy()
         {
-            foreach (Control c in this.equipGroupBox.Controls)
-            {
-                if (c is ComboBox)
-                {
-                    ((ComboBox)c).Items.Clear();
-                    ((ComboBox)c).ResetText();
-                    ((ComboBox)c).SelectedIndex = -1;
-                    ((ComboBox)c).Refresh();
-                }
-            }
-
             foreach (Control c in this.statsGroupBox.Controls)
             {
                 if (c is TextBox)
@@ -557,6 +628,54 @@ namespace VSStatsEditor
         {
             if (e.KeyCode == Keys.Escape)
                 this.Close();
+        }
+
+        private void bladeBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (bladeBox.SelectedItem.ToString().Contains("---"))
+                bladeBox.SelectedIndex++;
+        }
+
+        private void bp0NameBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (bp0NameBox.SelectedItem.ToString().Contains("---"))
+                bp0NameBox.SelectedIndex++;
+        }
+
+        private void bp1NameBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (bp1NameBox.SelectedItem.ToString().Contains("---"))
+                bp1NameBox.SelectedIndex++;
+        }
+
+        private void bp2NameBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (bp2NameBox.SelectedItem.ToString().Contains("---"))
+                bp2NameBox.SelectedIndex++;
+        }
+
+        private void bp3NameBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (bp3NameBox.SelectedItem.ToString().Contains("---"))
+                bp3NameBox.SelectedIndex++;
+        }
+
+        private void bp4NameBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (bp4NameBox.SelectedItem.ToString().Contains("---"))
+                bp4NameBox.SelectedIndex++;
+        }
+
+        private void bp5NameBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (bp5NameBox.SelectedItem.ToString().Contains("---"))
+                bp5NameBox.SelectedIndex++;
+        }
+
+        private void gripBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (gripBox.SelectedItem.ToString().Contains("---"))
+                gripBox.SelectedIndex++;
         }
     }
 }

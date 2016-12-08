@@ -1,6 +1,6 @@
 # VSStatsEditor
-VS Stats Editor v1.0 by j3
-March 11, 2016
+VS Stats Editor v1.1 by j3
+Last updated December 10, 2016
 =========================
 
 INTRODUCTION
@@ -20,7 +20,7 @@ CURRENT FUNCTIONALITY
 
 Using Valendian's VSTools and FASM, VS Stats Editor provides an interface to:
 -Decompile ZND files
--Edit basic enemy stats
+-Edit basic enemy stats, equipment, and drop rates
 -Multiply stats of all enemies by a given amount
 -Save and recompile these changes into ZND files
 
@@ -31,11 +31,7 @@ The following enemy stats can be viewed and edited using this program:
 -Strength
 -Intelligence
 -Agility
--Drop rates of each body part's piece of equipment (MISC items drop code is not yet known)
-
-The following is view-only:
--Names
--Weapons, grips, gems, armors.  Can NOT change what an enemy drops or has equipped yet.
+-Equipment and drops rates
 
 NOTE: THE ABOVE IS ABOUT VS STATS EDITOR, NOT VALENDIAN'S VSTOOLS.  VSTOOLS IS CAPABLE OF EDITING ALL OF THE ABOVE AND MUCH MORE.
 
@@ -48,13 +44,15 @@ MAKE SURE TO MAINTAIN THE DIRECTORY STRUCTURE FROM THE ZIP
 
 2) When a zone is selected, all enemies contained in the zone will load into the enemy selection box.  Select an enemy to edit.
 
-3) When an enemy is selected, the stats, equipment, and drop rates are loaded.  Edit desired stats and/or drop rates.
+3) When an enemy is selected, the stats, equipment, and drop rates are loaded.  Edit desired stats, equipment, and drop rates.
 
 4) Click save each time an enemy is edited.
 
 5) When finished editing enemies in multiple zones, click Recompile ZNDs.  Now the enemy edits that were made in the .ASM files are in the appropriate ZND files.
 
-6) Open your Vagrant Story image using CDMage.  Now each zone edited must be imported to the image.  Unfortunately this must be done one zone at a time by right clicking on the zone, select import, then select your edited zone in the VS Stats Editor Zones directory.
+6) Open your Vagrant Story image using CDMage. 
+    a. Select M2 Track
+    b. Now each zone edited must be imported to the image.  Unfortunately this must be done one zone at a time by right clicking on the zone, select import, then select your edited zone in the VS Stats Editor Zones directory.
 
 CREDITS, CONTACT, ETC
 ------------------
